@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+
+# 把 yourdomain.com 替换成你的实际域名
+Sitemap: penny-website.zhaopeiyu1507288.workers.dev
+
