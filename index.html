@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penny · Portfolio</title>
+<meta name="description" content="Personal portfolio and blog.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://penny-website.pages.dev/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Penny · Portfolio">
+<meta property="og:description" content="Personal portfolio and blog.">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Penny","url":"https://penny-website.pages.dev","sameAs":["https://github.com/pennyzhaozhao"]}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root{--bg:#0a0a0f;--bg2:#111118;--bg3:#1a1a24;--accent:#00d4aa;--accent2:#6366f1;--accent3:#f59e0b;--text:#e8e8f0;--text2:#9090a8;--text3:#5a5a72;--border:rgba(255,255,255,0.07);--border2:rgba(0,212,170,0.25);--mono:'JetBrains Mono',monospace;--sans:'Space Grotesk',sans-serif;--radius:8px;--radius-lg:14px;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,170,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,170,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,15,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:60px;}
+  .nav-logo{font-family:var(--mono);font-size:14px;color:var(--accent);letter-spacing:0.05em;}
+  .nav-links{display:flex;}
+  .nav-links button{background:none;border:none;color:var(--text2);font-family:var(--sans);font-size:13px;padding:8px 14px;cursor:pointer;border-radius:var(--radius);transition:color 0.2s,background 0.2s;}
+  .nav-links button:hover,.nav-links button.active{color:var(--accent);background:rgba(0,212,170,0.08);}
+  .nav-admin-btn{background:none;border:1px solid var(--border);color:var(--text3);font-family:var(--mono);font-size:11px;padding:6px 12px;border-radius:var(--radius);text-decoration:none;display:inline-flex;align-items:center;transition:all 0.2s;}
+  .nav-admin-btn:hover{border-color:var(--border2);color:var(--accent);}
+  .page{display:none;min-height:100vh;padding-top:80px;position:relative;z-index:1;}
+  .page.active{display:block;}
+  .container{max-width:900px;margin:0 auto;padding:2rem 2rem 4rem;}
+  .section-tag{font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.5rem;}
+  .section-title{font-size:2.2rem;font-weight:600;color:var(--text);margin-bottom:0.5rem;line-height:1.2;}
+  .section-sub{font-size:15px;color:var(--text2);margin-bottom:2.5rem;line-height:1.6;}
+  .hero{min-height:calc(100vh - 60px);display:flex;align-items:center;padding:0 2rem;max-width:900px;margin:0 auto;}
+  .hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,212,170,0.08);border:1px solid var(--border2);border-radius:100px;padding:5px 12px;font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:0.08em;margin-bottom:1.5rem;}
+  .hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+  .hero-name{font-size:clamp(2.5rem,6vw,4rem);font-weight:600;line-height:1.1;margin-bottom:0.5rem;}
+  .hero-name span{color:var(--accent);}
+  .hero-role{font-family:var(--mono);font-size:15px;color:var(--text2);margin-bottom:1.5rem;}
+  .hero-desc{font-size:16px;color:var(--text2);line-height:1.75;margin-bottom:2rem;max-width:480px;}
+  .hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+  .btn-primary{background:var(--accent);color:#0a0a0f;border:none;padding:11px 22px;border-radius:var(--radius);font-family:var(--sans);font-size:14px;font-weight:600;cursor:pointer;transition:opacity 0.2s,transform 0.15s;}
+  .btn-primary:hover{opacity:0.88;transform:translateY(-1px);}
+  .btn-ghost{background:none;color:var(--text2);border:1px solid var(--border);padding:11px 22px;border-radius:var(--radius);font-family:var(--sans);font-size:14px;cursor:pointer;transition:border-color 0.2s,color 0.2s;}
+  .btn-ghost:hover{border-color:var(--border2);color:var(--accent);}
+  .hero-stats{display:flex;gap:2rem;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);}
+  .stat-num{font-size:1.8rem;font-weight:600;color:var(--text);}
+  .stat-label{font-size:12px;color:var(--text3);font-family:var(--mono);}
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:2rem;}
+  .about-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;}
+  .about-card h3{font-size:14px;color:var(--accent);font-family:var(--mono);margin-bottom:1rem;letter-spacing:0.05em;}
+  .skill-list{display:flex;flex-wrap:wrap;gap:6px;}
+  .skill-tag{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:100px;font-size:12px;font-family:var(--mono);transition:border-color 0.2s,color 0.2s;text-decoration:none;display:inline-block;}
+  .skill-tag:hover{border-color:var(--border2);color:var(--accent);}
+  .about-bio{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.75rem;margin-bottom:2rem;font-size:15px;color:var(--text2);line-height:1.8;}
+  .timeline{position:relative;padding-left:1.5rem;}
+  .timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--border);}
+  .exp-item{position:relative;margin-bottom:2rem;padding-left:1.5rem;}
+  .exp-item::before{content:'';position:absolute;left:-1.5rem;top:6px;width:8px;height:8px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(0,212,170,0.15);}
+  .exp-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;transition:border-color 0.2s;}
+  .exp-card:hover{border-color:rgba(0,212,170,0.2);}
+  .exp-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.5rem;flex-wrap:wrap;gap:8px;}
+  .exp-title{font-size:16px;font-weight:600;color:var(--text);}
+  .exp-company{font-size:14px;color:var(--accent);font-family:var(--mono);}
+  .exp-period{font-size:11px;color:var(--text3);font-family:var(--mono);background:var(--bg3);padding:3px 8px;border-radius:4px;white-space:nowrap;}
+  .exp-desc{font-size:14px;color:var(--text2);line-height:1.7;margin-top:0.75rem;}
+  .projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+  .project-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;transition:border-color 0.25s,transform 0.2s;cursor:pointer;position:relative;overflow:hidden;}
+  .project-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity 0.25s;}
+  .project-card:hover{border-color:rgba(0,212,170,0.25);transform:translateY(-2px);}
+  .project-card:hover::after{opacity:1;}
+  .project-icon{font-size:24px;margin-bottom:0.75rem;}
+  .project-name{font-size:16px;font-weight:600;color:var(--text);margin-bottom:0.5rem;}
+  .project-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:1rem;}
+  .project-tags{display:flex;flex-wrap:wrap;gap:5px;}
+  .project-tag{font-size:10px;font-family:var(--mono);color:var(--accent2);background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.2);padding:2px 7px;border-radius:4px;}
+  .project-link{font-size:12px;color:var(--text3);font-family:var(--mono);text-decoration:none;margin-top:0.75rem;display:inline-block;transition:color 0.2s;}
+  .project-link:hover{color:var(--accent);}
+  .blog-list{display:flex;flex-direction:column;gap:1rem;}
+  .blog-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;cursor:pointer;transition:border-color 0.2s;display:flex;justify-content:space-between;align-items:center;gap:1rem;}
+  .blog-card:hover{border-color:rgba(0,212,170,0.25);}
+  .blog-card-info{flex:1;min-width:0;}
+  .blog-card-title{font-size:15px;font-weight:500;color:var(--text);margin-bottom:0.35rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .blog-card-meta{font-size:12px;color:var(--text3);font-family:var(--mono);}
+  .blog-card-tags{display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap;}
+  .blog-tag{font-size:10px;font-family:var(--mono);color:var(--accent3);background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.2);padding:2px 7px;border-radius:4px;}
+  .empty-state{text-align:center;padding:4rem 2rem;color:var(--text3);font-family:var(--mono);font-size:13px;border:1px dashed var(--border);border-radius:var(--radius-lg);}
+  #blog-post-view{display:none;min-height:100vh;padding-top:80px;position:relative;z-index:1;}
+  .post-header{max-width:720px;margin:0 auto;padding:2rem 2rem 1rem;border-bottom:1px solid var(--border);margin-bottom:2rem;}
+  .post-back{background:none;border:none;color:var(--text3);font-family:var(--mono);font-size:12px;cursor:pointer;margin-bottom:1.5rem;padding:0;display:flex;align-items:center;gap:6px;transition:color 0.2s;}
+  .post-back:hover{color:var(--accent);}
+  .post-title{font-size:2rem;font-weight:600;color:var(--text);margin-bottom:0.5rem;}
+  .post-meta{font-size:12px;color:var(--text3);font-family:var(--mono);}
+  .post-content{max-width:720px;margin:0 auto;padding:0 2rem 4rem;font-size:15px;color:var(--text2);line-height:1.85;}
+  .post-content h1,.post-content h2,.post-content h3{color:var(--text);margin:2rem 0 0.75rem;font-weight:600;}
+  .post-content h1{font-size:1.8rem;}.post-content h2{font-size:1.4rem;}.post-content h3{font-size:1.1rem;}
+  .post-content p{margin-bottom:1rem;}
+  .post-content code{font-family:var(--mono);background:var(--bg3);border:1px solid var(--border);padding:2px 6px;border-radius:4px;font-size:13px;color:var(--accent);}
+  .post-content pre{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;overflow-x:auto;margin:1.5rem 0;}
+  .post-content pre code{background:none;border:none;padding:0;font-size:13px;color:var(--text);}
+  .post-content blockquote{border-left:3px solid var(--accent);padding-left:1rem;margin:1.5rem 0;color:var(--text3);font-style:italic;}
+  .post-content ul,.post-content ol{padding-left:1.5rem;margin-bottom:1rem;}
+  .post-content li{margin-bottom:0.4rem;}
+  .post-content a{color:var(--accent);text-decoration:none;}
+  .post-content a:hover{text-decoration:underline;}
+  .post-content img{max-width:100%;border-radius:var(--radius);margin:1rem 0;}
+  .post-content hr{border:none;border-top:1px solid var(--border);margin:2rem 0;}
+  .post-content table{width:100%;border-collapse:collapse;margin:1.5rem 0;font-size:14px;}
+  .post-content th{background:var(--bg3);color:var(--text);padding:8px 12px;text-align:left;border:1px solid var(--border);}
+  .post-content td{padding:8px 12px;border:1px solid var(--border);color:var(--text2);}
+  .post-content .katex-display{margin:1.5rem 0;overflow-x:auto;}
+  .loading{display:flex;align-items:center;gap:8px;color:var(--text3);font-family:var(--mono);font-size:13px;padding:2rem 0;}
+  .loading::before{content:'';width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;flex-shrink:0;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  #toast{position:fixed;bottom:2rem;right:2rem;background:var(--bg2);border:1px solid var(--border2);color:var(--accent);padding:10px 16px;border-radius:var(--radius);font-family:var(--mono);font-size:12px;z-index:999;transform:translateY(80px);opacity:0;transition:all 0.3s;}
+  #toast.show{transform:translateY(0);opacity:1;}
+  @media(max-width:640px){.about-grid,.projects-grid{grid-template-columns:1fr;}.hero-stats{gap:1.25rem;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">~/portfolio</div>
+  <div class="nav-links">
+    <button onclick="showPage('home')" class="active" id="nav-home">home</button>
+    <button onclick="showPage('about')" id="nav-about">about</button>
+    <button onclick="showPage('experience')" id="nav-experience">experience</button>
+    <button onclick="showPage('projects')" id="nav-projects">projects</button>
+    <button onclick="showPage('blog')" id="nav-blog">blog</button>
+  </div>
+  <a href="admin.html" class="nav-admin-btn">admin ↗</a>
+</nav>
+
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">available for opportunities</div>
+      <h1 class="hero-name">Hi, I'm <span id="hero-name-display">...</span></h1>
+      <div class="hero-role" id="hero-role-display"></div>
+      <p class="hero-desc" id="hero-desc-display"></p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showPage('projects')">View Projects</button>
+        <button class="btn-ghost" onclick="showPage('blog')">Read Blog</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-num" id="stat-projects">—</div><div class="stat-label">projects</div></div>
+        <div><div class="stat-num" id="stat-posts">—</div><div class="stat-label">blog posts</div></div>
+        <div><div class="stat-num" id="stat-exp">—</div><div class="stat-label">years exp.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-about" class="page">
+  <div class="container">
+    <div class="section-tag">// about me</div>
+    <h2 class="section-title" id="about-name-h">...</h2>
+    <p class="section-sub" id="about-role-h"></p>
+    <div class="about-bio" id="about-bio-display"><div class="loading">loading profile</div></div>
+    <div class="about-grid">
+      <div class="about-card"><h3>// skills</h3><div class="skill-list" id="skills-display"></div></div>
+      <div class="about-card"><h3>// contact</h3><div class="skill-list" id="contact-display"></div></div>
+    </div>
+  </div>
+</div>
+
+<div id="page-experience" class="page">
+  <div class="container">
+    <div class="section-tag">// work history</div>
+    <h2 class="section-title">Experience</h2>
+    <p class="section-sub">My professional journey</p>
+    <div class="timeline" id="timeline-display"><div class="loading">loading</div></div>
+  </div>
+</div>
+
+<div id="page-projects" class="page">
+  <div class="container">
+    <div class="section-tag">// my work</div>
+    <h2 class="section-title">Projects</h2>
+    <p class="section-sub">Things I've built</p>
+    <div class="projects-grid" id="projects-display"><div class="loading">loading</div></div>
+  </div>
+</div>
+
+<div id="page-blog" class="page">
+  <div class="container">
+    <div class="section-tag">// writings</div>
+    <h2 class="section-title">Blog</h2>
+    <p class="section-sub">Thoughts, tutorials, and notes</p>
+    <div class="blog-list" id="blog-list-display"><div class="loading">loading posts</div></div>
+  </div>
+</div>
+
+<div id="blog-post-view">
+  <div class="post-header">
+    <button class="post-back" onclick="closeBlogPost()">← back to blog</button>
+    <h1 class="post-title" id="post-title-display"></h1>
+    <div class="post-meta" id="post-meta-display"></div>
+  </div>
+  <div class="post-content" id="post-content-display"></div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const GITHUB_USER = 'pennyzhaozhao';
+const GITHUB_REPO = 'penny-website';
+const BRANCH = 'main';
+const RAW = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${BRANCH}`;
+
+async function fetchJSON(path) {
+  try { const r = await fetch(`${RAW}/${path}?t=${Date.now()}`); return r.ok ? r.json() : null; }
+  catch { return null; }
+}
+async function fetchText(path) {
+  try { const r = await fetch(`${RAW}/${path}?t=${Date.now()}`); return r.ok ? r.text() : null; }
+  catch { return null; }
+}
+
+let profile={}, posts=[], projects=[], experience=[];
+
+async function loadAll() {
+  const [p,pr,ex,idx] = await Promise.all([
+    fetchJSON('profile.json'),
+    fetchJSON('projects.json'),
+    fetchJSON('experience.json'),
+    fetchJSON('posts/index.json'),
+  ]);
+  profile = p || {name:'Penny',role:'Developer',bio:'Welcome!',skills:'',exp:'0',email:'',github:'',twitter:'',linkedin:''};
+  projects = pr || [];
+  experience = ex || [];
+  posts = idx || [];
+  renderAll();
+}
+
+function renderAll() {
+  const p = profile;
+  document.getElementById('hero-name-display').textContent = p.name;
+  document.getElementById('hero-role-display').textContent = p.role;
+  document.getElementById('hero-desc-display').textContent = p.bio;
+  document.getElementById('about-name-h').textContent = p.name;
+  document.getElementById('about-role-h').textContent = p.role;
+  document.getElementById('about-bio-display').textContent = p.bio;
+  document.getElementById('stat-projects').textContent = projects.length;
+  document.getElementById('stat-posts').textContent = posts.length;
+  document.getElementById('stat-exp').textContent = p.exp||'0';
+  document.getElementById('skills-display').innerHTML = (p.skills||'').split(',').filter(s=>s.trim()).map(s=>`<span class="skill-tag">${s.trim()}</span>`).join('');
+  const contacts=[];
+  if(p.email) contacts.push(`<a href="mailto:${p.email}" class="skill-tag">${p.email}</a>`);
+  if(p.github) contacts.push(`<a href="https://${p.github}" target="_blank" class="skill-tag">${p.github}</a>`);
+  if(p.twitter) contacts.push(`<a href="https://${p.twitter}" target="_blank" class="skill-tag">${p.twitter}</a>`);
+  if(p.linkedin) contacts.push(`<a href="https://${p.linkedin}" target="_blank" class="skill-tag">${p.linkedin}</a>`);
+  document.getElementById('contact-display').innerHTML = contacts.join('');
+  renderTimeline(); renderProjects(); renderBlogList();
+}
+
+function renderTimeline() {
+  document.getElementById('timeline-display').innerHTML = experience.length
+    ? experience.map(e=>`<div class="exp-item"><div class="exp-card"><div class="exp-header"><div><div class="exp-title">${e.title}</div><div class="exp-company">${e.company}</div></div><div class="exp-period">${e.period}</div></div><div class="exp-desc">${e.desc}</div></div></div>`).join('')
+    : '<div class="empty-state">// no experience entries yet</div>';
+}
+
+function renderProjects() {
+  document.getElementById('projects-display').innerHTML = projects.length
+    ? projects.map(p=>`<div class="project-card" ${p.link?`onclick="window.open('${p.link}','_blank')"`:''}>
+        <div class="project-icon">${p.icon||'📁'}</div>
+        <div class="project-name">${p.name}</div>
+        <div class="project-desc">${p.desc}</div>
+        <div class="project-tags">${(p.tags||'').split(',').filter(t=>t.trim()).map(t=>`<span class="project-tag">${t.trim()}</span>`).join('')}</div>
+        ${p.link?`<span class="project-link">↗ view project</span>`:''}
+      </div>`).join('')
+    : '<div class="empty-state" style="grid-column:1/-1">// no projects yet</div>';
+}
+
+function renderBlogList() {
+  const el = document.getElementById('blog-list-display');
+  if(!posts.length){el.innerHTML='<div class="empty-state">// no posts yet</div>';return;}
+  el.innerHTML = posts.slice().reverse().map(post=>`
+    <div class="blog-card" onclick="openPost('${post.slug}')">
+      <div class="blog-card-info">
+        <div class="blog-card-title">${post.title}</div>
+        <div class="blog-card-meta">${post.date}${post.wordCount?' · '+post.wordCount+' words':''}</div>
+      </div>
+      <div class="blog-card-tags">${(post.tags||'').split(',').filter(t=>t.trim()).map(t=>`<span class="blog-tag">${t.trim()}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+async function openPost(slug) {
+  const post = posts.find(p=>p.slug===slug); if(!post) return;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('blog-post-view').style.display='block';
+  document.getElementById('post-title-display').textContent = post.title;
+  document.getElementById('post-meta-display').textContent = post.date+(post.wordCount?' · '+post.wordCount+' words':'');
+  document.getElementById('post-content-display').innerHTML='<div class="loading">loading post</div>';
+  const md = await fetchText(`posts/${slug}.md`);
+  if(md){
+    document.getElementById('post-content-display').innerHTML=marked.parse(md);
+    renderMath(document.getElementById('post-content-display'));
+  } else {
+    document.getElementById('post-content-display').innerHTML='<p style="color:var(--text3)">Could not load post.</p>';
+  }
+}
+
+function closeBlogPost(){showPage('blog');}
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  document.getElementById('blog-post-view').style.display='none';
+}
+
+function renderMath(el){
+  if(typeof renderMathInElement==='undefined') return;
+  renderMathInElement(el,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false});
+}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+loadAll();
+</script>
+</body>
+</html>
