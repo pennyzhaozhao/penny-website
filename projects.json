@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "id": "proj_1774390017664",
+    "name": "Hackthon-Victorian Integrated Survey of Travel and Activity (VISTA) - Mode Choice Behaviour Prediction",
+    "icon": "📁",
+    "desc": "Developed the final model optimisation and submission pipeline, combining CatBoost and LightGBM predictions via weighted\nensembling to minimise cross-entropy loss.\nImplemented probability calibration and model blending to improve prediction stability across the test dataset.\nCoordinated final model evaluation and submission strategy, leading the team to 1st place on the competition leaderboard",
+    "tags": "Python, Machine learning Models",
+    "link": "https://github.com/vronnie98/Oneroi-Hackathon/tree/main"
+  }
+]
