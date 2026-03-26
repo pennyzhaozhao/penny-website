@@ -288,8 +288,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);bac
       <div class="admin-list" id="projects-admin-list"></div>
       <div class="subform" id="project-form">
         <div class="form-grid">
+          <!-- Row 1: image + basic fields -->
           <div class="form-row">
-            <!-- Image upload -->
             <div class="form-group">
               <label class="form-label">Cover image</label>
               <div class="proj-img-upload" id="proj-img-area" onclick="document.getElementById('proj-img-input').click()">
@@ -305,21 +305,44 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--nav-bg);bac
               </div>
               <input type="file" id="proj-img-input" accept="image/*" style="display:none" onchange="loadProjImg(this)">
             </div>
-            <!-- Right side fields -->
             <div class="form-grid">
               <div class="form-row">
                 <div class="form-group"><label class="form-label">Project name</label><input class="form-input" id="proj-name" placeholder="My Awesome Project"></div>
                 <div class="form-group"><label class="form-label">Icon (emoji)</label><input class="form-input" id="proj-icon" placeholder="🚀" style="font-size:18px;"></div>
               </div>
-              <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="proj-desc" rows="3" placeholder="What does this project do?"></textarea></div>
+              <div class="form-group"><label class="form-label">Short description (shown on card)</label><textarea class="form-textarea" id="proj-desc" rows="2" placeholder="One or two sentences about this project…"></textarea></div>
               <div class="form-group"><label class="form-label">Tags (comma separated)</label><input class="form-input" id="proj-tags" placeholder="React, TypeScript, Node.js"></div>
-              <div class="form-group"><label class="form-label">Project link</label><input class="form-input" id="proj-link" placeholder="https://github.com/…"></div>
+              <div class="form-group"><label class="form-label">External link (optional)</label><input class="form-input" id="proj-link" placeholder="https://github.com/…"></div>
             </div>
           </div>
+
+          <!-- Row 2: full md content editor -->
+          <div class="form-group">
+            <label class="form-label">Project page content (Markdown)</label>
+            <div style="font-size:11px;color:var(--text4);margin-bottom:6px;">This becomes the full detail page — write as much as you like. Supports headings, code blocks, math ($E=mc^2$), images, tables.</div>
+            <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
+              <div class="upload-zone" onclick="document.getElementById('proj-md-img').click()" style="padding:6px 12px;font-size:12px;">Insert image</div>
+              <input type="file" id="proj-md-img" accept="image/*" style="display:none" onchange="insertProjMdImg(this)">
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;height:50vh;min-height:280px;">
+              <div class="editor-pane">
+                <div class="editor-pane-label"><span>Markdown</span><span id="proj-wc" style="font-size:10px;font-family:var(--mono);color:var(--text4)">0 words</span></div>
+                <textarea id="proj-md-input" style="flex:1;background:transparent;border:none;color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.75;padding:1rem;resize:none;outline:none;"
+                  placeholder="## Overview&#10;&#10;Describe your project here...&#10;&#10;## Motivation&#10;&#10;Why did you build this?&#10;&#10;## Technical Details&#10;&#10;```python&#10;def example():&#10;    pass&#10;```&#10;&#10;## Results&#10;&#10;$$\text{Accuracy} = \frac{TP+TN}{TP+TN+FP+FN}$$"
+                  oninput="renderProjPreview()"></textarea>
+              </div>
+              <div class="editor-pane">
+                <div class="editor-pane-label"><span>Preview</span></div>
+                <div class="preview-body" id="proj-md-preview"></div>
+              </div>
+            </div>
+          </div>
+
           <input type="hidden" id="proj-edit-id">
-          <div style="display:flex;gap:8px;">
+          <div style="display:flex;gap:8px;align-items:center;">
             <button class="btn-primary" onclick="saveProjectLocal()">Save project</button>
             <button class="btn-ghost" onclick="cancelProjectForm()">Cancel</button>
+            <span style="font-size:12px;color:var(--text4);">Then click "Publish to GitHub" above to go live</span>
           </div>
         </div>
       </div>
@@ -549,26 +572,72 @@ async function saveProfile(){
 let currentProjImg='';
 function renderAdminProjects(){
   document.getElementById('projects-admin-list').innerHTML=projects.length
-    ?projects.map(p=>`<div class="admin-item">${p.image?`<img class="proj-card-thumb" src="${p.image}" alt="">`:`<div class="admin-item-icon">${p.icon||'📁'}</div>`}<div class="admin-item-info"><div class="admin-item-name">${p.name}</div><div class="admin-item-sub">${(p.tags||'').split(',').slice(0,3).join(', ')}${p.link?' · '+p.link.replace(/^https?:\/\//,'').split('/')[0]:''}</div></div><div class="admin-item-actions"><button class="btn-icon" onclick="editProjectForm('${p.id}')" title="Edit">✎</button><button class="btn-icon del" onclick="deleteProjectLocal('${p.id}')" title="Delete">✕</button></div></div>`).join('')
+    ?projects.map(p=>`<div class="admin-item">${p.image?`<img class="proj-card-thumb" src="${p.image}" alt="">`:`<div class="admin-item-icon">${p.icon||'📁'}</div>`}<div class="admin-item-info"><div class="admin-item-name">${p.name}</div><div class="admin-item-sub">${(p.tags||'').split(',').slice(0,3).join(', ')}${p.mdFile?' · has detail page':''}</div></div><div class="admin-item-actions"><button class="btn-icon" onclick="editProjectForm('${p.id}')" title="Edit">✎</button><button class="btn-icon del" onclick="deleteProjectLocal('${p.id}')" title="Delete">✕</button></div></div>`).join('')
     :'<div class="empty-hint">No projects yet — click "+ Add project" to get started</div>';
 }
-function addProjectForm(){['proj-name','proj-icon','proj-desc','proj-tags','proj-link'].forEach(id=>document.getElementById(id).value='');document.getElementById('proj-edit-id').value='';currentProjImg='';clearProjImgUI();document.getElementById('project-form').classList.add('open');document.getElementById('project-form').scrollIntoView({behavior:'smooth',block:'nearest'});}
-function editProjectForm(id){const p=projects.find(x=>x.id===id);if(!p)return;document.getElementById('proj-name').value=p.name||'';document.getElementById('proj-icon').value=p.icon||'';document.getElementById('proj-desc').value=p.desc||'';document.getElementById('proj-tags').value=p.tags||'';document.getElementById('proj-link').value=p.link||'';document.getElementById('proj-edit-id').value=id;currentProjImg=p.image||'';p.image?setProjImgUI(p.image):clearProjImgUI();document.getElementById('project-form').classList.add('open');document.getElementById('project-form').scrollIntoView({behavior:'smooth',block:'nearest'});}
+function addProjectForm(){['proj-name','proj-icon','proj-desc','proj-tags','proj-link','proj-md-input'].forEach(id=>document.getElementById(id).value='');document.getElementById('proj-edit-id').value='';currentProjImg='';clearProjImgUI();document.getElementById('proj-md-preview').innerHTML='';document.getElementById('proj-wc').textContent='0 words';document.getElementById('project-form').classList.add('open');document.getElementById('project-form').scrollIntoView({behavior:'smooth',block:'nearest'});}
+async function editProjectForm(id){
+  const p=projects.find(x=>x.id===id);if(!p)return;
+  document.getElementById('proj-name').value=p.name||'';
+  document.getElementById('proj-icon').value=p.icon||'';
+  document.getElementById('proj-desc').value=p.desc||'';
+  document.getElementById('proj-tags').value=p.tags||'';
+  document.getElementById('proj-link').value=p.link||'';
+  document.getElementById('proj-edit-id').value=id;
+  currentProjImg=p.image||'';
+  p.image?setProjImgUI(p.image):clearProjImgUI();
+  // load existing md content from GitHub
+  if(p.mdFile){
+    const md=await fetchRaw(p.mdFile);
+    document.getElementById('proj-md-input').value=md||'';
+    renderProjPreview();
+  } else {
+    document.getElementById('proj-md-input').value='';
+    document.getElementById('proj-md-preview').innerHTML='';
+  }
+  document.getElementById('project-form').classList.add('open');
+  document.getElementById('project-form').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
 function cancelProjectForm(){document.getElementById('project-form').classList.remove('open');}
 function loadProjImg(input){const file=input.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>{currentProjImg=e.target.result;setProjImgUI(e.target.result);};reader.readAsDataURL(file);input.value='';}
 function setProjImgUI(src){const a=document.getElementById('proj-img-area'),t=document.getElementById('proj-img-thumb');t.src=src;a.classList.add('filled');}
 function clearProjImg(){currentProjImg='';clearProjImgUI();}
 function clearProjImgUI(){const a=document.getElementById('proj-img-area'),t=document.getElementById('proj-img-thumb');t.src='';a.classList.remove('filled');}
+function renderProjPreview(){
+  const text=document.getElementById('proj-md-input').value;
+  document.getElementById('proj-md-preview').innerHTML=marked.parse(text);
+  renderMath(document.getElementById('proj-md-preview'));
+  const wc=wordCount(text);
+  document.getElementById('proj-wc').textContent=wc+' word'+(wc!==1?'s':'');
+}
+function insertProjMdImg(input){const file=input.files[0];if(!file)return;const reader=new FileReader();reader.onload=e=>{const ta=document.getElementById('proj-md-input');const alt=file.name.replace(/\.[^.]+$/,'');const md=`\n![${alt}](${e.target.result})\n`;const pos=ta.selectionStart;ta.value=ta.value.slice(0,pos)+md+ta.value.slice(pos);ta.selectionStart=ta.selectionEnd=pos+md.length;renderProjPreview();toast('Image inserted!');};reader.readAsDataURL(file);input.value='';}
 function saveProjectLocal(){
   const name=document.getElementById('proj-name').value.trim();if(!name){toast('Project name required','err');return;}
-  const obj={name,icon:document.getElementById('proj-icon').value||'📁',desc:document.getElementById('proj-desc').value,tags:document.getElementById('proj-tags').value,link:document.getElementById('proj-link').value,image:currentProjImg||''};
   const editId=document.getElementById('proj-edit-id').value;
+  const id=editId||'proj_'+Date.now();
+  const mdFile=`projects/${id}.md`;
+  const obj={id,name,icon:document.getElementById('proj-icon').value||'📁',desc:document.getElementById('proj-desc').value,tags:document.getElementById('proj-tags').value,link:document.getElementById('proj-link').value,image:currentProjImg||'',mdFile,mdContent:document.getElementById('proj-md-input').value};
   if(editId){const idx=projects.findIndex(p=>p.id===editId);if(idx>-1)projects[idx]={...projects[idx],...obj};}
-  else projects.push({id:'proj_'+Date.now(),...obj});
-  cancelProjectForm();renderAdminProjects();toast('Saved — click "Publish to GitHub" to sync');
+  else projects.push(obj);
+  cancelProjectForm();renderAdminProjects();toast('Saved locally — click "Publish to GitHub" to go live');
 }
 function deleteProjectLocal(id){if(!confirm('Remove this project?'))return;projects=projects.filter(p=>p.id!==id);renderAdminProjects();toast('Removed — publish to sync');}
-async function saveProjects(){try{const sha=await getSha('projects.json');await ghPut('projects.json',JSON.stringify(projects,null,2),'update projects',sha);toast('Projects published ✓');}catch(e){toast(e.message,'err');}}
+async function saveProjects(){
+  try{
+    // write each project's md file
+    for(const p of projects){
+      if(p.mdContent!==undefined&&p.mdFile){
+        const sha=await getSha(p.mdFile);
+        await ghPut(p.mdFile,p.mdContent,`update project page: ${p.name}`,sha);
+      }
+    }
+    // write projects.json (without mdContent — keep it lean)
+    const meta=projects.map(({mdContent,...rest})=>rest);
+    const sha=await getSha('projects.json');
+    await ghPut('projects.json',JSON.stringify(meta,null,2),'update projects',sha);
+    toast('Projects published ✓');
+  }catch(e){toast(e.message,'err');}
+}
 
 // EXPERIENCE
 function renderAdminExp(){
