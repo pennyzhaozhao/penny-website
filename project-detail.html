@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="icon" type="image/png" sizes="32x32"
+      href="https://raw.githubusercontent.com/pennyzhaozhao/all-the-things/main/web_material/apple-touch-icon.png">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Project · Portfolio</title>
@@ -32,6 +34,7 @@
   --accent:#2f81f7;
   --accent2:#1f6feb;
   --accent-soft:rgba(47,129,247,.10);
+  --grid-line: rgba(47,129,247,.08);
   --tag-bg:#ddf4ff;
   --tag-color:#0969da;
   --tag-border:#b6e3ff;
@@ -57,6 +60,7 @@
   --accent:#58a6ff;
   --accent2:#79c0ff;
   --accent-soft:rgba(88,166,255,.10);
+  --grid-line: rgba(88,166,255,.08);
   --tag-bg:rgba(56,139,253,.15);
   --tag-color:#79c0ff;
   --tag-border:rgba(88,166,255,.22);
@@ -70,7 +74,19 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;scroll-behavior:smooth}
-body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.75;transition:background .2s,color .2s}
+body{
+  font-family:var(--sans);
+  background:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px),
+    var(--bg);
+  background-size: 40px 40px;
+  color:var(--text);
+  line-height:1.75;
+  transition:background .2s,color .2s;
+}
+
+
 a{color:inherit}
 #progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--progress-bar);z-index:220;width:0}
 nav{
@@ -130,13 +146,20 @@ nav{
 .project-content td{color:var(--text2);font-size:14px}
 .project-content hr{border:none;border-top:1px solid var(--border);margin:2rem 0}
 .project-content .katex-display{overflow:auto;padding:.35rem 0}
-.toc-wrap{position:sticky;top:calc(var(--nav-h) + 20px)}
+.toc-wrap{
+  position: sticky;
+  top: calc(var(--nav-h) + 20px);
+  height: calc(100vh - var(--nav-h) - 20px);
+}
 .toc-card{background:var(--panel);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);padding:18px 16px 18px 18px;max-height:calc(100vh - var(--nav-h) - 36px);display:flex;flex-direction:column}
 .toc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;padding:0 4px}
 .toc-title{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:800;color:var(--text);letter-spacing:.02em}
 .toc-title-icon{font-size:18px;color:var(--text3)}
 .toc-count{font:italic 700 1rem var(--mono);color:var(--text4)}
-.toc-scroll{overflow:auto;padding-right:6px}
+.toc-scroll{
+  flex: 1;                  /* ⭐关键 */
+  overflow-y: auto;
+}
 .toc-scroll::-webkit-scrollbar{width:8px}
 .toc-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:999px}
 .toc-list{list-style:none;display:flex;flex-direction:column;gap:2px;border-left:1px solid var(--border2);padding-left:14px}
@@ -179,7 +202,7 @@ nav{
 <div id="progress-bar"></div>
 <nav>
   <div class="nav-left">
-    <a class="nav-back" href="index.html"><span>←</span> <span>Projects</span></a>
+    <a class="nav-back" href="index.html#page-projects"><span>←</span> <span>Projects</span></a>
     <div class="nav-divider"></div>
     <div class="nav-proj-name" id="nav-proj-name">Loading…</div>
   </div>
@@ -294,7 +317,7 @@ async function init(){
         ${header}
         <div class="project-content" id="proj-body">${temp.innerHTML}</div>
         <div class="project-footer">
-          <a class="footer-link" href="index.html">← Back to all projects</a>
+          <a class="footer-link" href="index.html#page-projects">← Back to all projects</a>
           ${proj.link?`<a class="footer-link" href="${proj.link}" target="_blank">↗ View on GitHub</a>`:''}
         </div>
       </main>
